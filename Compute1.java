@@ -135,13 +135,16 @@ class Volumina extends Thread{
       PageSubmitted[box.boxHost1] = box.boxHost1;
       PageSubmitted[box.boxHost2] = box.boxHost2;
 
+      System.out.println("Volumina taking page...");
       total = total + box.RemoveArr();
 
       if(box.removed()==false && emptied==true){
          int PageTotal = PageSubmitted[0]+PageSubmitted[1]+PageSubmitted[2]+PageSubmitted[3]+PageSubmitted[4]+PageSubmitted[5];
          if(PageTotal==15 && box.removed()==false){
             emptied=false;
+            System.out.println("\nVolumina has all pages.\n");
             System.out.println("Grand Total: "+total);
+            System.out.println("\n End...");
          }
          box.remove = true;
       }
@@ -159,6 +162,7 @@ public class Compute1
    {  
       // Set up array of cubicles. Have an extra one so that we can index from 1.
       // Initialise each tablet value to be same as cubicle no.
+      System.out.println("Starting...");
 
       BoxOfDigitalDelights box = new BoxOfDigitalDelights();
 
