@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+
 /* The Computators of Vrymnos program.
  * Threads are used to represent Apprentices. Each Apprentice will
  * retrieve three tablets from cubicles, sum their values and announce the result.
@@ -40,7 +42,6 @@ class Apprentice extends Thread
    public void run(){  
       int ncubs = row.length - 1;
       int tot = 0; int value;
-      int m;
 
          // Get 3 tablets
       for (int i = 0; i < 3; i++){  
@@ -56,16 +57,12 @@ class Apprentice extends Thread
             // Announce the tablet value and add it to total
          System.out.println("Apprentice " + id + " has retrieved a tablet. The number is " + value); 
          tot += value;
-
+         if(i==2){
+            b.insert(tot);
+         }
             // Yield to allow fairer scheduling of threads
          Thread.yield();
-
       }
-
-      m = tot;
-      b.insert(m);
-
-
    } 
 
 }
@@ -80,37 +77,69 @@ class Volumina extends Thread {
       b = box;
    }
 
-   public void run(){ 
-      System.out.println(b.remove());
+   public void run(){
+      while(b.finish==false){
+         finalTotal = finalTotal + b.remove();
+      }  
+      System.out.println("Total: "+finalTotal);
+      
    } 
 
 }
 
 class Box {
 
-   private volatile boolean empty = true;
+   LinkedList<Integer> box = new LinkedList<>();
    private int v;
+   int RunningTotal = 0;
+   boolean finish = false;
+   private int e;
+
+   public Box(int endResult){
+      e = endResult;
+   }
 
    public synchronized void insert(int value) {
-      while (!empty) {
+      while(box.size()==2) {
          try {
             wait();
-         } catch (InterruptedException e) {} 
+         } catch (InterruptedException e) {}
       }
-      v = value;
-      empty = false;
+
+      if(box.size()<2){
+         box.add(value);
+      }
+
       notify();
    }
    
    public synchronized int remove() {
-      while (empty) {
+      while(box.size()==0) {
          try{
             wait();
          }
          catch (Exception e) {}
       }
-      empty = true;
+
+      if(box.size()==2){
+         v = box.get(0) + box.get(1);
+         box.clear();
+      }
+      else if(box.size()==1){
+         v = box.removeFirst();
+      }
+      else{
+         v = 0;
+      }
+      
+      RunningTotal = RunningTotal+v;
+      if(RunningTotal==e){
+         finish = true;
+      }
+
+      notify();
       return v;
+      
    }
    
 }
@@ -125,7 +154,15 @@ public class Compute1
    public static void main(String args[]) 
    {  
 
-      Box box = new Box();
+      // Finding end result
+      // eg: All cubicles added
+
+      int endResult = 0;
+      for(int i=1; i<=18; i++){
+         endResult = endResult+i;
+      }
+      
+      Box box = new Box(endResult);
 
       Volumina v = new Volumina(box);
       v.start();
