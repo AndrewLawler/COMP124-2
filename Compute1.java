@@ -64,7 +64,7 @@ class Apprentice extends Thread
          System.out.println("Apprentice " + id + " has retrieved a tablet. The number is " + value); 
          tot += value;
          if(i==2){
-            b.insert(tot);
+            b.insert(tot,id);
          }
             // Yield to allow fairer scheduling of threads
          Thread.yield();
@@ -86,7 +86,7 @@ class Volumina extends Thread {
    public void run(){
       while(b.finish==false){
          int n = b.remove();
-         System.out.println("Removed "+n);
+         System.out.println("Volumina removed a total of "+n+" from the box");
          finalTotal = finalTotal + n;
       }  
       System.out.println("Volumina summons the final total...");
@@ -108,13 +108,13 @@ class Box {
       e = endResult;
    }
 
-   public synchronized void insert(int value) {
+   public synchronized void insert(int value, int id) {
       while(box.size()==2) {
          try {
             wait();
          } catch (InterruptedException e) {}
       }
-
+      System.out.println("Apprentice " + id + " has moved their parchment into the box");
       if(box.size()<2){
          box.add(value);
       }
@@ -140,7 +140,7 @@ class Box {
       else{
          v = 0;
       }
-     
+      
       RunningTotal = RunningTotal+v;
       if(RunningTotal==e){
          finish = true;
