@@ -6,6 +6,12 @@ import java.util.LinkedList;
  * Copyright David Jackson 2019.
  */
 
+/*
+Name: Andrew Lawler
+Student ID: 201210893
+Student E-Mail: A.M.Lawler@student.liverpool.ac.uk
+*/
+
 class Cubicle 
 {  private boolean full = true; // initially, cubicle contains a tablet
    private int tablet;
@@ -79,9 +85,12 @@ class Volumina extends Thread {
 
    public void run(){
       while(b.finish==false){
-         finalTotal = finalTotal + b.remove();
+         int n = b.remove();
+         System.out.println("Removed "+n);
+         finalTotal = finalTotal + n;
       }  
-      System.out.println("Total: "+finalTotal);
+      System.out.println("Volumina summons the final total...");
+      System.out.println("Total is "+finalTotal);
       
    } 
 
@@ -131,7 +140,7 @@ class Box {
       else{
          v = 0;
       }
-      
+     
       RunningTotal = RunningTotal+v;
       if(RunningTotal==e){
          finish = true;
