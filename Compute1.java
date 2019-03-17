@@ -158,7 +158,7 @@ public class Compute1
       // eg: All cubicles added
 
       int endResult = 0;
-      for(int i=1; i<=18; i++){
+      for(int i=1; i<=NUMCUBS; i++){
          endResult = endResult+i;
       }
       
