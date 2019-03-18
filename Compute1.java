@@ -121,7 +121,7 @@ class Box {
          box.add(value);
       }
       finish = false;
-      notifyAll();
+      notify();
    }
    
    public synchronized int remove() {
