@@ -66,7 +66,7 @@ class Apprentice extends Thread
          if(i==2){
             b.insert(tot,id);
          }
-            // Yield to allow fairer scheduling of threads
+         // Yield to allow fairer scheduling of threads
          Thread.yield();
       }
    } 
@@ -86,7 +86,6 @@ class Volumina extends Thread {
    public void run(){
       while(b.finish==false){
          int n = b.remove();
-         System.out.println("Volumina removed a total of "+n+" from the box");
          finalTotal = finalTotal + n;
       }  
       System.out.println("Volumina summons the final total...");
@@ -109,17 +108,20 @@ class Box {
    }
 
    public synchronized void insert(int value, int id) {
-      while(box.size()==2) {
+      //System.out.println(box);
+      while(box.size()==2){
          try {
             wait();
-         } catch (InterruptedException e) {}
-      }
-      System.out.println("Apprentice " + id + " has moved their parchment into the box");
-      if(box.size()<2){
-         box.add(value);
+         } 
+         catch (InterruptedException e) {}
       }
 
-      notify();
+      if(box.size()<2){
+         System.out.println("Apprentice " + id + " has moved their parchment into the box");
+         box.add(value);
+      }
+      finish = false;
+      notifyAll();
    }
    
    public synchronized int remove() {
@@ -130,17 +132,12 @@ class Box {
          catch (Exception e) {}
       }
 
-      if(box.size()==2){
-         v = box.get(0) + box.get(1);
-         box.clear();
-      }
-      else if(box.size()==1){
+      if(box.size()>=1){
          v = box.removeFirst();
       }
-      else{
-         v = 0;
-      }
-      
+
+      System.out.println("Volumina removed a total of "+v+" from the box");
+
       RunningTotal = RunningTotal+v;
       if(RunningTotal==e){
          finish = true;
