@@ -131,7 +131,7 @@ class Box {
 
       // If box size is less than 2, add to the box
       if(box.size()<2){
-         System.out.println("Apprentice " + id + " has moved their parchment into the box");
+         System.out.println("Apprentice " + id + " has moved their parchment with total "+ value + " into the box");
          box.add(value);
       }
       
