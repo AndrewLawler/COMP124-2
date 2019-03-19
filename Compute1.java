@@ -63,6 +63,8 @@ class Apprentice extends Thread
             // Announce the tablet value and add it to total
          System.out.println("Apprentice " + id + " has retrieved a tablet. The number is " + value); 
          tot += value;
+
+         // if we are on last loop at the end, send the overall total to the insert method before yield
          if(i==2){
             b.insert(tot,id);
          }
@@ -73,21 +75,26 @@ class Apprentice extends Thread
 
 }
 
-// consumer
+// Volumina Thread
 class Volumina extends Thread {
 
+   // Takes in box as parameter
    private Box b;
    int finalTotal = 0;
 
+   // Constructor to take the box and assign b to box
    public Volumina(Box box){
       b = box;
    }
 
+   // run method
    public void run(){
+      // While finish condition is false, remove from the box and add to the final total
       while(b.finish==false){
          int n = b.remove();
          finalTotal = finalTotal + n;
       }  
+      // When over, summon the final total
       System.out.println("Volumina summons the final total...");
       System.out.println("Total is "+finalTotal);
       
@@ -97,18 +104,24 @@ class Volumina extends Thread {
 
 class Box {
 
+   // Initialize Linked List box
    LinkedList<Integer> box = new LinkedList<>();
+
+   // Initializing attributes including runningtotal and finish boolean
    private int v;
    int RunningTotal = 0;
    boolean finish = false;
    private int e;
 
+   // Constructor to assign endresult to e
    public Box(int endResult){
       e = endResult;
    }
 
+   // Insert Method
    public synchronized void insert(int value, int id) {
-      //System.out.println(box);
+     
+      // While box has two elements, wait
       while(box.size()==2){
          try {
             wait();
@@ -116,15 +129,23 @@ class Box {
          catch (InterruptedException e) {}
       }
 
+      // If box size is less than 2, add to the box
       if(box.size()<2){
          System.out.println("Apprentice " + id + " has moved their parchment into the box");
          box.add(value);
       }
+      
+      // Not finished
       finish = false;
+
+      // Notify waiting threads
       notify();
    }
    
+   // Remove Method
    public synchronized int remove() {
+
+      // While box is empty, wait
       while(box.size()==0) {
          try{
             wait();
@@ -132,17 +153,22 @@ class Box {
          catch (Exception e) {}
       }
 
+      // If box size is greater than or equal to one, remove the first element
       if(box.size()>=1){
          v = box.removeFirst();
       }
 
       System.out.println("Volumina removed a total of "+v+" from the box");
 
+      // add v(total removed) to the runningtotal
       RunningTotal = RunningTotal+v;
+
+      // check is running total is equal to the end result calculated. If so, change finish to true
       if(RunningTotal==e){
          finish = true;
       }
 
+      // Notify threads and return v to Volumina
       notify();
       return v;
       
@@ -162,14 +188,15 @@ public class Compute1
 
       // Finding end result
       // eg: All cubicles added
-
       int endResult = 0;
       for(int i=1; i<=NUMCUBS; i++){
          endResult = endResult+i;
       }
       
+      // Sending endresult to box
       Box box = new Box(endResult);
 
+      // Passing volumina into box
       Volumina v = new Volumina(box);
       v.start();
 
