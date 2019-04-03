@@ -107,14 +107,15 @@ class Box {
    // initializing box and pagetotal counter
    LinkedList<Integer> box = new LinkedList<>();
    int pagetotal = 0;
-   // The box does not reference NUMCUBS or NUMAPPS, this is important as it means the project can scale without having to edit. 
-   // If you wanted to make the box bigger, just increment the while(box.size==2) to something different.
+   // To scale up the project simply change the while box.size == 2 to something else and the program would still work.
    public synchronized void insert(int value, int id){
       // while box = full, wait
       while(box.size()==2){
          try {
+            System.out.println("Apprentice " + id + " is now waiting");
             wait();
          } 
+         // catch produces nothing so we can leave it empty
          catch (InterruptedException e) {}
       }
       // add to box, print which value has been added and then print the box itself
@@ -129,6 +130,8 @@ class Box {
       // while box = empty, wait
       while(box.size()==0) {
          try{
+            // print that the box is empty
+            System.out.println("Box is empty");
             wait();
          }
          catch (Exception e) {}
@@ -140,6 +143,7 @@ class Box {
       // add to page total and then print out the current amount of pages we have
       pagetotal++;
       System.out.println("Volumina Page Count: " + pagetotal);
+      // notify and return v(value) to Volumina
       notify();
       return v;
    }
