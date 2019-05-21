@@ -4,13 +4,10 @@ import java.util.LinkedList;
  * Threads are used to represent Apprentices. Each Apprentice will
  * retrieve three tablets from cubicles, sum their values and announce the result.
  * Copyright David Jackson 2019.
+ * 
+ * Java Threading assignment, code for producer/consumer class' handled by Andrew Lawler
+ * 
  */
-
-/*
-Name: Andrew Lawler
-Student ID: 201210893
-Student E-Mail: A.M.Lawler@student.liverpool.ac.uk
-*/
 
 class Cubicle 
 {  private boolean full = true; // initially, cubicle contains a tablet
